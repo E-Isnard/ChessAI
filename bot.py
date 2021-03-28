@@ -3,7 +3,7 @@ import os
 import berserk
 from dotenv import load_dotenv
 from random import choice
-from time import sleep
+from time import perf_counter
 load_dotenv()
 
 PIECES_VALUES = {
@@ -21,7 +21,6 @@ PIECES_VALUES = {
     "Q": 9,
     "K": 0
 }
-
 
 def eval_board(b: chess.Board) -> float:
     if b.result()=="0-1":
@@ -143,6 +142,11 @@ def turochamp(depth:int) -> None:
 
 turochamp(2)
 # b = chess.Board()
+# s = perf_counter()
+# x = compute_best_move(b,0)
+# t = perf_counter()-s
+# print(f"time:{t}")
+
 # b.push_san("e4")
 # b.push_san("e5")
 # b.push_san("d4")
