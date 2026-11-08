@@ -6,7 +6,7 @@ import sys
 import berserk
 import chess
 
-from .search import compute_best_move
+from .search import Searcher, compute_best_move
 
 
 def play_game(client: berserk.Client, game_id: str, depth: int) -> None:
@@ -15,6 +15,7 @@ def play_game(client: berserk.Client, game_id: str, depth: int) -> None:
     stream = client.bots.stream_game_state(game_id)
     b = chess.Board()
     my_color = None
+    searcher = Searcher()  # keeps the transposition table across the whole game
 
     for event in stream:
         event_type = event.get("type")
@@ -50,7 +51,7 @@ def play_game(client: berserk.Client, game_id: str, depth: int) -> None:
             break
 
         if b.turn == my_color and not b.is_game_over():
-            best_move = compute_best_move(b, depth=depth)
+            best_move = compute_best_move(b, depth=depth, searcher=searcher)
             if best_move:
                 try:
                     client.bots.make_move(game_id, best_move.uci())

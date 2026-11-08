@@ -93,13 +93,21 @@ MATE_SCORE = 100000
 
 
 def eval_board(b: chess.Board) -> int:
-    """Static evaluation from the perspective of the side to move."""
+    """Evaluation from the side to move's perspective, including terminal states."""
     if b.is_checkmate():
         return -MATE_SCORE
 
     if b.is_stalemate() or b.is_insufficient_material() or b.can_claim_draw():
         return 0
 
+    return evaluate(b)
+
+
+def evaluate(b: chess.Board) -> int:
+    """Pure static evaluation (material + PST) from the side to move's perspective.
+
+    Does no terminal-state detection; the search handles mates and draws itself.
+    """
     score = 0
     for square, piece in b.piece_map().items():
         val = PIECE_VALUES[piece.piece_type]
